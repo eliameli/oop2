@@ -20,6 +20,8 @@ class Library(private val items: List<LibraryItem>) {
             println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n0. Выход")
             when (readLine()?.toIntOrNull()) {
                 1 -> showItems()
+
+
                 2 -> purchaseItem()  // покупка
                 0 -> return
                 else -> println("Неверный выбор.")
@@ -30,39 +32,6 @@ class Library(private val items: List<LibraryItem>) {
     private fun showItems() {
         // Показать объекты
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
-    }
-
-    private fun purchaseItem() {
-        println("Выберите:\n1. Магазин книг\n2. Магазин дисков\n3. Газетный ларек\n0. Назад")
-
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
-                val book = manager.buy(BookStore())
-                println("Куплена книга: ${book.name}")
-            }
-            2 -> {
-                val disk = manager.buy(DiskStore())
-                println("Куплен диск: ${disk.name}")
-            }
-            3 -> {
-                val newspaper = manager.buy(NewspaperStore())
-                println("Куплена газета: ${newspaper.name}")
-            }
-            0 -> return
-            else -> println("Неверный выбор.")
-        }
-
-        while (true) {
-            println("Выберите тип объекта в библиотеке:\n1. Показать книги\n2. Показать газеты\n3. Показать диски\n0. Выход")
-            when (readLine()?.toIntOrNull()) {
-                1 -> showItems(items.filterIsInstance<Book>())
-                2 -> showItems(items.filterIsInstance<Newspaper>())
-                3 -> showItems(items.filterIsInstance<Disk>())
-                0 -> return
-                else -> println("Неверный выбор.")
-            }
-        }
     }
     private fun <T : LibraryItem> showItems(items: List<T>) {
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
@@ -89,4 +58,29 @@ class Library(private val items: List<LibraryItem>) {
             else -> println("Неверный выбор.")
         }
     }
+
+    private fun purchaseItem() {
+        println("Выберите:\n1. Магазин книг\n2. Магазин дисков\n3. Газетный ларек\n0. Назад")
+
+        when (readLine()?.toIntOrNull()) {
+            1 -> {
+
+                val book = manager.buy(BookStore())
+                println("Куплена книга: ${book.name}")
+            }
+            2 -> {
+                val disk = manager.buy(DiskStore())
+                println("Куплен диск: ${disk.name}")
+            }
+            3 -> {
+                val newspaper = manager.buy(NewspaperStore())
+                println("Куплена газета: ${newspaper.name}")
+            }
+            0 -> return
+            else -> println("Неверный выбор.")
+        }
+        return
+
+    }
+
 }
