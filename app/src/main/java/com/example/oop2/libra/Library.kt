@@ -19,9 +19,7 @@ class Library(private val items: List<LibraryItem>) {
         while (true) {
             println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n0. Выход")
             when (readLine()?.toIntOrNull()) {
-                1 -> showItems()
-
-
+                1 -> showItems(items)
                 2 -> purchaseItem()  // покупка
                 0 -> return
                 else -> println("Неверный выбор.")
@@ -29,19 +27,20 @@ class Library(private val items: List<LibraryItem>) {
         }
     }
 
-    private fun showItems() {
-        // Показать объекты
-        items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
-    }
     private fun <T : LibraryItem> showItems(items: List<T>) {
+        if (items.isEmpty()) {
+            println("Библиотека пуста.")
+            return
+        }
+
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
         println("Выберите объект (номер) или 0 для возврата в меню:")
-        val objectNumber = readLine()?.toIntOrNull()
 
+        val objectNumber = readLine()?.toIntOrNull()
         if (objectNumber == 0) return
 
         if (objectNumber != null && objectNumber in 1..items.size) {
-            performAction(items[objectNumber - 1] as LibraryAction)  // приход к экшена
+            performAction(items[objectNumber - 1] as LibraryAction)
         } else {
             println("Неверный номер объекта.")
         }
