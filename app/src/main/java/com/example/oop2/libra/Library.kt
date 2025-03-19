@@ -20,7 +20,7 @@ class Library(private val items: List<LibraryItem>) {
             println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n0. Выход")
             when (readLine()?.toIntOrNull()) {
                 1 -> showItems()
-                2 -> purchaseItem()  // Выбор покупки
+                2 -> purchaseItem()  // покупка
                 0 -> return
                 else -> println("Неверный выбор.")
             }
@@ -38,15 +38,15 @@ class Library(private val items: List<LibraryItem>) {
         when (readLine()?.toIntOrNull()) {
             1 -> {
                 items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
-                val book = manager.buy(BookStore())  // Покупка книги
+                val book = manager.buy(BookStore())
                 println("Куплена книга: ${book.name}")
             }
             2 -> {
-                val disk = manager.buy(DiskStore())  // Покупка диска
+                val disk = manager.buy(DiskStore())
                 println("Куплен диск: ${disk.name}")
             }
             3 -> {
-                val newspaper = manager.buy(NewspaperStore())  // Покупка газеты
+                val newspaper = manager.buy(NewspaperStore())
                 println("Куплена газета: ${newspaper.name}")
             }
             0 -> return
