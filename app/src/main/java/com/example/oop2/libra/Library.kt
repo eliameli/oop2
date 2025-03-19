@@ -6,10 +6,55 @@ import com.example.oop2.models.Disk
 import com.example.oop2.models.LibraryItem
 import com.example.oop2.LibraryAction
 
+import com.example.oop2.stores.Manager
+import com.example.oop2.stores.BookStore
+import com.example.oop2.stores.DiskStore
+import com.example.oop2.stores.NewspaperStore
+
+
 class Library(private val items: List<LibraryItem>) {
+    private val manager = Manager()  // Создаем экземпляр менеджера
+
     fun start() {
         while (true) {
-            println("Выберите тип объекта:\n1. Показать книги\n2. Показать газеты\n3. Показать диски\n0. Выход")
+            println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n0. Выход")
+            when (readLine()?.toIntOrNull()) {
+                1 -> showItems()
+                2 -> purchaseItem()  // Выбор покупки
+                0 -> return
+                else -> println("Неверный выбор.")
+            }
+        }
+    }
+
+    private fun showItems() {
+        // Показать объекты
+        items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
+    }
+
+    private fun purchaseItem() {
+        println("Выберите:\n1. Магазин книг\n2. Магазин дисков\n3. Газетный ларек\n0. Назад")
+
+        when (readLine()?.toIntOrNull()) {
+            1 -> {
+                items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
+                val book = manager.buy(BookStore())  // Покупка книги
+                println("Куплена книга: ${book.name}")
+            }
+            2 -> {
+                val disk = manager.buy(DiskStore())  // Покупка диска
+                println("Куплен диск: ${disk.name}")
+            }
+            3 -> {
+                val newspaper = manager.buy(NewspaperStore())  // Покупка газеты
+                println("Куплена газета: ${newspaper.name}")
+            }
+            0 -> return
+            else -> println("Неверный выбор.")
+        }
+
+        while (true) {
+            println("Выберите тип объекта в библиотеке:\n1. Показать книги\n2. Показать газеты\n3. Показать диски\n0. Выход")
             when (readLine()?.toIntOrNull()) {
                 1 -> showItems(items.filterIsInstance<Book>())
                 2 -> showItems(items.filterIsInstance<Newspaper>())

@@ -10,7 +10,6 @@ class Newspaper(
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
 
-
     private fun getMonthName(month: Int): String {
         val months = listOf(
             "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
