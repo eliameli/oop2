@@ -5,7 +5,7 @@ import com.example.oop2.models.Newspaper
 import com.example.oop2.models.Disk
 import com.example.oop2.models.LibraryItem
 import com.example.oop2.LibraryAction
-
+import com.example.oop2.stores.DigitizationCabinet
 import com.example.oop2.stores.Manager
 import com.example.oop2.stores.BookStore
 import com.example.oop2.stores.DiskStore
@@ -17,10 +17,11 @@ class Library(private val items: List<LibraryItem>) {
 
     fun start() {
         while (true) {
-            println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n0. Выход")
+            println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n3. Оцифровать \n0. Выход")
             when (readLine()?.toIntOrNull()) {
                 1 -> showItems(items)
                 2 -> purchaseItem()  // покупка
+                3 -> digitizeItem() // оцифровка
                 0 -> return
                 else -> println("Неверный выбор.")
             }
@@ -79,6 +80,39 @@ class Library(private val items: List<LibraryItem>) {
             else -> println("Неверный выбор.")
         }
         return
+
+    }
+
+
+
+
+
+    private fun digitizeItem() {
+        val booksAndNewspapers =
+            items.filterIsInstance<Book>() + items.filterIsInstance<Newspaper>()
+
+        if (booksAndNewspapers.isEmpty()) {
+            println("Нет доступных книг или газет для оцифровки.")
+            return
+        }
+
+        println("Выберите объект для оцифровки:")
+        booksAndNewspapers.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
+
+        val choice = readLine()?.toIntOrNull()
+        if (choice == null || choice !in 1..booksAndNewspapers.size) {
+            println("Неверный выбор.")
+            return
+        }
+
+        val digitizationCabinet = DigitizationCabinet() // Создаем объект
+
+
+
+        val selectedItem = booksAndNewspapers[choice - 1]
+        val disk = DigitizationCabinet.digitize(selectedItem)
+        println("Оцифровка завершена! Создан цифровой носитель: ${disk.getBriefInfo()}")
+
 
     }
 
