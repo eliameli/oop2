@@ -14,7 +14,7 @@ import com.example.oop2.stores.NewspaperStore
 
 class Library(private val items: MutableList<LibraryItem>) {
 
-    private val manager = Manager()  // Создаем экземпляр менеджера
+    private val manager = Manager()  // экземпляр менеджера
     private val digitizationCabinet = DigitizationCabinet()
     fun start() {
         while (true) {
