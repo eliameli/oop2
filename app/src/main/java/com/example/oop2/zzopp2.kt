@@ -3,10 +3,10 @@ import com.example.oop2.models.Book
 import com.example.oop2.models.Newspaper
 import com.example.oop2.models.Disk
 import com.example.oop2.libra.Library
-
+import com.example.oop2.models.LibraryItem
 fun main() {
     // создание элементов
-    val items = listOf(
+    val items: MutableList<LibraryItem> = mutableListOf(
         Book(1, true, "Маугли", "Джозеф Киплинг", 202),
         Book(11, true, "Звездные войны", "Джордж Лукас", 401),
         Newspaper(2, true, "Сельская жизнь",  794, 3),
