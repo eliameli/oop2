@@ -5,7 +5,7 @@ class Disk(
     id: Int,
     isAvailable: Boolean,
     name: String,
-    val diskType: String
+    val diskType: DiskType
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
     override fun getBriefInfo(): String = "$diskType $name доступна: ${if (isAvailable) "Да" else "Нет"}"

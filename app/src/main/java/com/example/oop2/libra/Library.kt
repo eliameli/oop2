@@ -1,13 +1,14 @@
 package com.example.oop2.libra
 
-import com.example.oop2.models.Book
-import com.example.oop2.models.Newspaper
+
+import com.example.oop2.models.*
 
 import com.example.oop2.models.LibraryItem
 import com.example.oop2.LibraryAction
 import com.example.oop2.stores.DigitizationCabinet
 import com.example.oop2.stores.Manager
 import com.example.oop2.stores.BookStore
+
 import com.example.oop2.stores.DiskStore
 import com.example.oop2.stores.NewspaperStore
 
@@ -15,7 +16,7 @@ import com.example.oop2.stores.NewspaperStore
 class Library(private val items: MutableList<LibraryItem>) {
 
     private val manager = Manager()  // экземпляр менеджера
-    private val digitizationCabinet = DigitizationCabinet()
+    private val digitizationCabinet = DigitizationCabinet<LibraryItem, Disk>()
     fun start() {
         while (true) {
             println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n3. Оцифровать \n0. Выход\n\n")
@@ -91,28 +92,26 @@ class Library(private val items: MutableList<LibraryItem>) {
 
 
 
-
-
     private fun digitizeItem() {
         println("Выберите объект для оцифровки (номер) или 0 для возврата в меню:")
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
         val objectNumber = readLine()?.toIntOrNull()
 
-        if (objectNumber == 0) return
-
         if (objectNumber != null && objectNumber in 1..items.size) {
             val selectedItem = items[objectNumber - 1]
+
             if (selectedItem is Book || selectedItem is Newspaper) {
-                val disk = digitizationCabinet.digitize(selectedItem) // оцифра
-                items.add(disk) // адд в библио
-                println("Оцифровка завершена. Новый диск добавлен в библиотеку.\nЕго название:${disk.name}\n\n")
+                val disk = digitizationCabinet.digitize(selectedItem)
+                items.add(disk)
+                println("Оцифровка завершена! Новый диск добавлен в библиотеку: ${disk.getBriefInfo()}")
             } else {
-                println("Этот объект нельзя оцифровать.\n\n")
+                println("Этот объект нельзя оцифровать!")
             }
         } else {
-            println("Неверный номер объекта.\n\n")
+            println("Неверный номер объекта.")
         }
     }
+
 
 
 }
