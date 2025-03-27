@@ -1,9 +1,6 @@
 package com.example.oop2.models
 import com.example.oop2.models.LibraryItem
-
 enum class DiskType { CD, DVD }
-
-
 
 data class LibraryItem(
     val id: Int,

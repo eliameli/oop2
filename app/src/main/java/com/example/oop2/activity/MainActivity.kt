@@ -1,5 +1,7 @@
 package com.example.oop2  // Убедитесь, что пакет соответствует вашему проекту
 
+
+import com.example.oop2.R
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity

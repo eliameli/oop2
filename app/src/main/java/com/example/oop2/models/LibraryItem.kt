@@ -1,5 +1,7 @@
 package com.example.oop2.models
-import com.example.oop2.models.LibraryItem
+
+
+import com.example.oop2.R
 
 abstract class LibraryItem(
     val id: Int,

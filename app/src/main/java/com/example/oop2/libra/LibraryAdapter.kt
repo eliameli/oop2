@@ -15,7 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-
+import com.example.oop2.R  // Убедись, что путь соответствует твоему пакету
 import com.example.oop2.models.LibraryItem  // Убедись, что путь к модели правильный
 
 
