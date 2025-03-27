@@ -1,5 +1,7 @@
 package com.example.oop2.models
 import com.example.oop2.LibraryAction
+import com.example.oop2.models.DiskType
+import com.example.oop2.models.LibraryItem
 
 class Disk(
     id: Int,
@@ -7,7 +9,7 @@ class Disk(
     name: String,
     val diskType: DiskType
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
-
+    override val iconResId: Int = R.drawable.ic_disk
     override fun getBriefInfo(): String = "$diskType $name доступна: ${if (isAvailable) "Да" else "Нет"}"
 
     override fun getDetailedInfo(): String =

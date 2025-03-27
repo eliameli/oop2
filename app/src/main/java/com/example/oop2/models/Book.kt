@@ -1,5 +1,6 @@
 package com.example.oop2.models
 import com.example.oop2.LibraryAction
+import com.example.oop2.models.LibraryItem
 
 class Book(
     id: Int,
@@ -7,8 +8,9 @@ class Book(
     name: String,
     val author: String,
     val pages: Int
-) : LibraryItem(id, isAvailable, name), LibraryAction {
 
+) : LibraryItem(id, isAvailable, name), LibraryAction {
+    override val iconResId: Int = R.drawable.ic_book
     // то что забыл почему то
     override fun getBriefInfo(): String = "$name доступна: ${if (isAvailable) "Да" else "Нет"}"
 

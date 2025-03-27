@@ -1,5 +1,6 @@
 package com.example.oop2.models
 import com.example.oop2.LibraryAction
+import com.example.oop2.models.LibraryItem
 
 class Newspaper(
     id: Int,
@@ -9,7 +10,7 @@ class Newspaper(
     val Month: Int
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
-
+    override val iconResId: Int = R.drawable.ic_newspaper
     private fun getMonthName(month: Int): String {
         val months = listOf(
             "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
