@@ -24,7 +24,7 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
             name.text = item.name
             icon.setImageResource(item.iconResId)
 
-            // Изменение доступности элемента (прозрачность текста, тень карточки)
+
             name.alpha = if (item.isAvailable) 1.0f else 0.3f
             card.cardElevation = if (item.isAvailable) 10f else 1f
 
@@ -32,7 +32,7 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
                 item.isAvailable = !item.isAvailable
                 Toast.makeText(itemView.context, "Элемент с id ${item.id}", Toast.LENGTH_SHORT).show()
 
-                // Проверяем, что позиция валидная перед обновлением
+
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     notifyItemChanged(position)

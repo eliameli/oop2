@@ -1,5 +1,5 @@
 package com.example.oop2.libra
-import com.example.oop2.R
+
 
 
 import com.example.oop2.models.*
@@ -9,7 +9,7 @@ import com.example.oop2.LibraryAction
 import com.example.oop2.stores.DigitizationCabinet
 import com.example.oop2.stores.Manager
 import com.example.oop2.stores.BookStore
-
+import com.example.oop2.R
 import com.example.oop2.stores.DiskStore
 import com.example.oop2.stores.NewspaperStore
 

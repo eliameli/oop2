@@ -1,17 +1,15 @@
 package com.example.oop2.activity
 
-
-
 import com.example.oop2.R
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.oop2.databinding.ActivityMainBinding
+
 import com.example.oop2.libra.LibraryAdapter
 import com.example.oop2.models.*
-import com.example.oop2.*
+
 
 
 

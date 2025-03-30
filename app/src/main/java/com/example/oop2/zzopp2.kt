@@ -2,6 +2,7 @@ package com.example.oop2
 import com.example.oop2.models.*
 import com.example.oop2.libra.Library
 import com.example.oop2.models.LibraryItem
+import com.example.oop2.R
 fun main() {
     // создание элементов
     val items: MutableList<LibraryItem> = mutableListOf(
