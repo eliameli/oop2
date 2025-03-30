@@ -9,16 +9,15 @@ class Book(
     name: String,
     val author: String,
     val pages: Int
-
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
-    override val iconResId: Int = R.drawable.ic_book
-    // то что забыл почему то
-    override fun getBriefInfo(): String = "$name доступна: ${if (isAvailable) "Да" else "Нет"}"
 
+    override val iconResId: Int = R.drawable.ic_book
+
+    override fun getBriefInfo(): String =
+        "$name (Автор: $author) — ${if (isAvailable) "Доступна" else "Нет"}"
 
     override fun getDetailedInfo(): String =
-        "Книга: $name ($pages стр.) автора: $author с id: $id доступна: ${if (isAvailable) "Да" else "Нет"}"
-
+        "Книга '$name' автора $author, $pages страниц"
 
     override fun takeHome() {
         if (isAvailable) {
@@ -38,11 +37,10 @@ class Book(
         }
     }
 
-
     override fun returnItem() {
         if (!isAvailable) {
             isAvailable = true
-            println("$name возвращен.")
+            println("$name возвращена.")
         } else {
             println("$name уже доступна.")
         }
