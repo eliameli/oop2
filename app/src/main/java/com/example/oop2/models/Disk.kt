@@ -2,6 +2,7 @@ package com.example.oop2.models
 import com.example.oop2.LibraryAction
 import com.example.oop2.models.DiskType
 import com.example.oop2.models.LibraryItem
+import com.example.oop2.R
 
 class Disk(
     id: Int,
@@ -9,11 +10,14 @@ class Disk(
     name: String,
     val diskType: DiskType
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
+
     override val iconResId: Int = R.drawable.ic_disk
-    override fun getBriefInfo(): String = "$diskType $name доступна: ${if (isAvailable) "Да" else "Нет"}"
+
+    override fun getBriefInfo(): String =
+        "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"
 
     override fun getDetailedInfo(): String =
-        "$diskType $name с id: $id доступна: ${if (isAvailable) "Да" else "Нет"}"
+        "$diskType '$name' (ID: $id)"
 
     override fun takeHome() {
         if (isAvailable) {
@@ -25,13 +29,13 @@ class Disk(
     }
 
     override fun readInHall() {
-        println("Нельзя использовать диск в читальном зале.")
+        println("Нельзя использовать диск $name в читальном зале.")
     }
 
     override fun returnItem() {
         if (!isAvailable) {
             isAvailable = true
-            println("$diskType $name возвращен.")
+            println("$diskType $name возвращён.")
         } else {
             println("$diskType $name уже доступен.")
         }

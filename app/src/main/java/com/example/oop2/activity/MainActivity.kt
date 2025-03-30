@@ -1,13 +1,15 @@
-package com.example.oop2  // Убедитесь, что пакет соответствует вашему проекту
+package com.example.oop2.activity
 
+import com.example.oop2.R
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.oop2.databinding.ActivityMainBinding
+
 import com.example.oop2.libra.LibraryAdapter
-import com.example.oop2.models.LibraryItem
+import com.example.oop2.models.*
+
 
 
 
@@ -28,14 +30,29 @@ class MainActivity : AppCompatActivity() {
 
         loadLibraryItems()
     }
+    private val items = mutableListOf<LibraryItem>()
 
     private fun loadLibraryItems() {
-        val items = listOf(
-            LibraryItem(1, "Маугли", true, R.drawable.ic_book),
-            LibraryItem(2, "Звездные войны", true, R.drawable.ic_book),
-            LibraryItem(3, "Сельская жизнь", false, R.drawable.ic_newspaper),
-            LibraryItem(4, "Дэдпул и Росомаха", true, R.drawable.ic_disk)
+
+
+        val books = listOf(
+            Book(1, true, "Маугли", "Джозеф Киплинг", 202),
+            Book(11, true, "Звездные войны", "Джордж Лукас", 401)
         )
+
+        val disks = listOf(
+
+            Disk(3, true, "Дэдпул и Росомаха", DiskType.CD),
+            Disk(31, true, "Один Дома", DiskType.DVD)
+        )
+        val newspaper = listOf(
+            Newspaper(2, true, "Сельская жизнь",  794, 3),
+            Newspaper(21, true, "Семья",   23, 12)
+        )
+
+
+
+
         adapter.submitList(items)
     }
 }
