@@ -15,35 +15,36 @@ import com.example.oop2.models.LibraryItem
 
 class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder>(DiffCallback()) {
 
-    inner class LibraryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val icon: ImageView = itemView.findViewById(R.id.item_icon)
-        private val name: TextView = itemView.findViewById(R.id.item_name)
-        private val card: CardView = itemView.findViewById(R.id.item_card)
+    class LibraryViewHolder(itemView: View, private val adapter: LibraryAdapter) :
+        RecyclerView.ViewHolder(itemView) {
+
+        private val nameTextView: TextView = itemView.findViewById(R.id.item_name)
+        private val iconImageView: ImageView = itemView.findViewById(R.id.item_icon)
+        private val cardView: CardView = itemView.findViewById(R.id.item_card)
 
         fun bind(item: LibraryItem) {
-            name.text = item.name
-            icon.setImageResource(item.iconResId)
+            nameTextView.text = item.name
+            iconImageView.setImageResource(item.iconResId)
 
-
-            name.alpha = if (item.isAvailable) 1.0f else 0.3f
-            card.cardElevation = if (item.isAvailable) 10f else 1f
+            if (item.isAvailable) {
+                cardView.elevation = 10f
+                nameTextView.alpha = 1.0f
+            } else {
+                cardView.elevation = 1f
+                nameTextView.alpha = 0.3f
+            }
 
             itemView.setOnClickListener {
                 item.isAvailable = !item.isAvailable
                 Toast.makeText(itemView.context, "Элемент с id ${item.id}", Toast.LENGTH_SHORT).show()
-
-
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    notifyItemChanged(position)
-                }
+                adapter.notifyItemChanged(adapterPosition)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_library, parent, false)
-        return LibraryViewHolder(view)
+        return LibraryViewHolder(view, this)
     }
 
     override fun onBindViewHolder(holder: LibraryViewHolder, position: Int) {
@@ -57,6 +58,5 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
                     oldItem.name == newItem.name &&
                     oldItem.isAvailable == newItem.isAvailable
         }
-
     }
 }
