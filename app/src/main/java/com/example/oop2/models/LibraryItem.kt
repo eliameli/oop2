@@ -6,6 +6,7 @@ abstract class LibraryItem(
     val id: Int,
     var isAvailable: Boolean,
     val name: String
+
 ) {
     abstract val iconResId: Int
     abstract fun getBriefInfo(): String
