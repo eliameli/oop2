@@ -1,6 +1,6 @@
 package com.example.oop2.libra
 
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,11 +42,6 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
             }
         }
     }
-    //override fun onBindViewHolder(holder: LibraryViewHolder, position: Int) {
-      //  Log.d("LibraryDebug", "onBindViewHolder: ${getItem(position).name} at position $position")
-  //      holder.bind(getItem(position))
-//    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_library, parent, false)
         return LibraryViewHolder(view, this)
@@ -61,7 +56,6 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
         newList.removeAt(position)
         submitList(newList)
     }
-
 
     class DiffCallback : DiffUtil.ItemCallback<LibraryItem>() {
         override fun areItemsTheSame(oldItem: LibraryItem, newItem: LibraryItem) = oldItem.id == newItem.id
