@@ -1,5 +1,6 @@
 package com.example.oop2.libra
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,7 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
 
         fun bind(item: LibraryItem) {
             nameTextView.text = item.name
-            iconImageView.setImageResource(item.iconResId)
+                iconImageView.setImageResource(item.iconResId)
 
             if (item.isAvailable) {
                 cardView.elevation = 10f
@@ -41,7 +42,6 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_library, parent, false)
         return LibraryViewHolder(view, this)
@@ -51,12 +51,20 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
         holder.bind(getItem(position))
     }
 
+    fun removeItem(position: Int) {
+        val newList = currentList.toMutableList()
+        newList.removeAt(position)
+        submitList(newList)
+    }
+
     class DiffCallback : DiffUtil.ItemCallback<LibraryItem>() {
         override fun areItemsTheSame(oldItem: LibraryItem, newItem: LibraryItem) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: LibraryItem, newItem: LibraryItem): Boolean {
             return oldItem.id == newItem.id &&
                     oldItem.name == newItem.name &&
-                    oldItem.isAvailable == newItem.isAvailable
+                    oldItem.isAvailable == newItem.isAvailable &&
+                    oldItem.iconResId == newItem.iconResId
         }
+
     }
 }

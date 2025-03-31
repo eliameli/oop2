@@ -45,7 +45,7 @@ class Library(private val items: MutableList<LibraryItem>) {
         }
     }
 
-    // Выполнить действие
+
     private fun performAction(item: LibraryAction) {
         println("Выберите действие:\n1. Взять домой\n2. Читать в читальном зале\n3. Показать подробную информацию\n4. Вернуть\n0. Вернуться в меню\n\n")
         when (readLine()?.toIntOrNull()) {
