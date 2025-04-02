@@ -1,17 +1,13 @@
 package com.example.oop2.libra
 
-
 import com.example.oop2.models.*
-
 import com.example.oop2.models.LibraryItem
 import com.example.oop2.LibraryAction
 import com.example.oop2.stores.DigitizationCabinet
 import com.example.oop2.stores.Manager
 import com.example.oop2.stores.BookStore
-
 import com.example.oop2.stores.DiskStore
 import com.example.oop2.stores.NewspaperStore
-
 
 class Library(private val items: MutableList<LibraryItem>) {
 
@@ -20,7 +16,7 @@ class Library(private val items: MutableList<LibraryItem>) {
     fun start() {
         while (true) {
             println("Выберите действие:\n1. Показать объекты\n2. Купить объект\n3. Оцифровать \n0. Выход\n\n")
-            when (readLine()?.toIntOrNull()) {
+            when (readlnOrNull()?.toIntOrNull()) {
                 1 -> showItems(items)
                 2 -> purchaseItem()  // покупка
                 3 -> digitizeItem() // оцифровка
@@ -50,10 +46,6 @@ class Library(private val items: MutableList<LibraryItem>) {
     }
 
 
-
-
-
-    // Выполнить действие
     private fun performAction(item: LibraryAction) {
         println("Выберите действие:\n1. Взять домой\n2. Читать в читальном зале\n3. Показать подробную информацию\n4. Вернуть\n0. Вернуться в меню\n\n")
         when (readLine()?.toIntOrNull()) {
@@ -90,13 +82,10 @@ class Library(private val items: MutableList<LibraryItem>) {
 
     }
 
-
-
     private fun digitizeItem() {
         println("Выберите объект для оцифровки (номер) или 0 для возврата в меню:")
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
         val objectNumber = readLine()?.toIntOrNull()
-
         if (objectNumber != null && objectNumber in 1..items.size) {
             val selectedItem = items[objectNumber - 1]
 
@@ -111,7 +100,4 @@ class Library(private val items: MutableList<LibraryItem>) {
             println("Неверный номер объекта.")
         }
     }
-
-
-
 }

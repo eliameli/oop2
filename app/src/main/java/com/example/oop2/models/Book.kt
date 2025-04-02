@@ -1,5 +1,7 @@
 package com.example.oop2.models
 import com.example.oop2.LibraryAction
+import com.example.oop2.models.LibraryItem
+import com.example.oop2.R
 
 class Book(
     id: Int,
@@ -9,13 +11,13 @@ class Book(
     val pages: Int
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
-    // то что забыл почему то
-    override fun getBriefInfo(): String = "$name доступна: ${if (isAvailable) "Да" else "Нет"}"
+    override val iconResId: Int = R.drawable.ic_book
 
+    override fun getBriefInfo(): String =
+        "$name (Автор: $author) — ${if (isAvailable) "Доступна" else "Нет"}"
 
     override fun getDetailedInfo(): String =
-        "Книга: $name ($pages стр.) автора: $author с id: $id доступна: ${if (isAvailable) "Да" else "Нет"}"
-
+        "Книга '$name' автора $author, $pages страниц"
 
     override fun takeHome() {
         if (isAvailable) {
@@ -35,11 +37,10 @@ class Book(
         }
     }
 
-
     override fun returnItem() {
         if (!isAvailable) {
             isAvailable = true
-            println("$name возвращен.")
+            println("$name возвращена.")
         } else {
             println("$name уже доступна.")
         }

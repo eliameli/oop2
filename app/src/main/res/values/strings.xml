@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">oop2</string>
+    <string name="app_name">OOP2 Library</string>
+    <string name="item_icon_desc">Иконка элемента библиотеки</string>
 </resources>
