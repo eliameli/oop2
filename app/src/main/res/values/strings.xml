@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">OOP2 Library</string>
     <string name="item_icon_desc">Иконка элемента библиотеки</string>
+    <string name="fab_add_button">Добавить элемент</string>
+    <string name="item_id">ID: %1$d</string>
+    <string name="save_button_text">Сохранить</string>
+
 </resources>

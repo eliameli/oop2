@@ -35,7 +35,7 @@ class Library(private val items: MutableList<LibraryItem>) {
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
         println("Выберите объект (номер) или 0 для возврата в меню:\n\n")
 
-        val objectNumber = readLine()?.toIntOrNull()
+        val objectNumber = readlnOrNull()?.toIntOrNull()
         if (objectNumber == 0) return
 
         if (objectNumber != null && objectNumber in 1..items.size) {
@@ -48,7 +48,7 @@ class Library(private val items: MutableList<LibraryItem>) {
 
     private fun performAction(item: LibraryAction) {
         println("Выберите действие:\n1. Взять домой\n2. Читать в читальном зале\n3. Показать подробную информацию\n4. Вернуть\n0. Вернуться в меню\n\n")
-        when (readLine()?.toIntOrNull()) {
+        when (readlnOrNull()?.toIntOrNull()) {
             1 -> item.takeHome()
             2 -> item.readInHall()
             3 -> println(item.getDetailedInfo())
@@ -61,7 +61,7 @@ class Library(private val items: MutableList<LibraryItem>) {
     private fun purchaseItem() {
         println("Выберите:\n1. Магазин книг\n2. Магазин дисков\n3. Газетный ларек\n0. Назад\n\n")
 
-        when (readLine()?.toIntOrNull()) {
+        when (readlnOrNull()?.toIntOrNull()) {
             1 -> {
 
                 val book = manager.buy(BookStore())
@@ -85,7 +85,7 @@ class Library(private val items: MutableList<LibraryItem>) {
     private fun digitizeItem() {
         println("Выберите объект для оцифровки (номер) или 0 для возврата в меню:")
         items.forEachIndexed { index, item -> println("${index + 1}. ${item.getBriefInfo()}") }
-        val objectNumber = readLine()?.toIntOrNull()
+        val objectNumber = readlnOrNull()?.toIntOrNull()
         if (objectNumber != null && objectNumber in 1..items.size) {
             val selectedItem = items[objectNumber - 1]
 

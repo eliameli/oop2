@@ -1,6 +1,5 @@
 package com.example.oop2.libra
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,20 +11,26 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.oop2.R
-import com.example.oop2.models.LibraryItem
+import com.example.oop2.models.*
 
 class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder>(DiffCallback()) {
 
-    class LibraryViewHolder(itemView: View, private val adapter: LibraryAdapter) :
-        RecyclerView.ViewHolder(itemView) {
+    class LibraryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val nameTextView: TextView = itemView.findViewById(R.id.item_name)
         private val iconImageView: ImageView = itemView.findViewById(R.id.item_icon)
         private val cardView: CardView = itemView.findViewById(R.id.item_card)
+        private val idTextView: TextView = itemView.findViewById(R.id.item_id)
 
-        fun bind(item: LibraryItem) {
+
+
+        fun bind(item: LibraryItem, adapter: LibraryAdapter) {
+            itemView.findViewById<TextView>(R.id.item_name).text = item.name
             nameTextView.text = item.name
-                iconImageView.setImageResource(item.iconResId)
+            iconImageView.setImageResource(item.getIconResId())
+            idTextView.text = itemView.context.getString(R.string.item_id, item.id)
+
+
 
             if (item.isAvailable) {
                 cardView.elevation = 10f
@@ -42,13 +47,14 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_library, parent, false)
-        return LibraryViewHolder(view, this)
+        return LibraryViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: LibraryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), this)
     }
 
     fun removeItem(position: Int) {
@@ -62,9 +68,7 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
         override fun areContentsTheSame(oldItem: LibraryItem, newItem: LibraryItem): Boolean {
             return oldItem.id == newItem.id &&
                     oldItem.name == newItem.name &&
-                    oldItem.isAvailable == newItem.isAvailable &&
-                    oldItem.iconResId == newItem.iconResId
+                    oldItem.isAvailable == newItem.isAvailable
         }
-
     }
 }

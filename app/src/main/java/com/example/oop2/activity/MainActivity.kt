@@ -1,48 +1,52 @@
 package com.example.oop2.activity
 
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import com.example.oop2.R
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.oop2.R
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.oop2.libra.LibraryAdapter
 import com.example.oop2.models.*
+import android.widget.Button
+
+//import androidx.recyclerview.widget.DiffUtil
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: LibraryAdapter
+    private lateinit var libraryAdapter: LibraryAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        recyclerView = findViewById(R.id.recyclerView)
-        adapter = LibraryAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-        loadLibraryItems()
+
         supportActionBar?.title = "Библиотека"
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.purple_200)))
 
-        val itemTouchHelper = ItemTouchHelper(object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = LibraryAdapter()
+        recyclerView.adapter = adapter
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                adapter.removeItem(position)
-            }
-        })
+        recyclerView.adapter = libraryAdapter
 
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+        val items = loadLibraryItems()
+        libraryAdapter.submitList(items)
+
+        setupSwipeToDelete()
+
+
+        val addButton = findViewById<Button>(R.id.add_button)
+        addButton.setOnClickListener {
+            openNewItemScreen()
+        }
     }
-
-    private fun loadLibraryItems() {
+    private fun loadLibraryItems(): List<LibraryItem> {
         val books = listOf(
             Book(1, true, "Маугли", "Джозеф Киплинг", 202),
             Book(11, true, "Звездные войны, Часть 1", "Джордж Лукас", 401),
@@ -50,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             Book(13, true, "Звездные войны, Часть 3", "Джордж Лукас", 441),
             Book(14, true, "Звездные войны, Часть 4", "Джордж Лукас", 423),
             Book(15, true, "Звездные войны, Часть 5", "Джордж Лукас", 363),
-            Book(16, true, "Звездные войны, Часть 6", "Джордж Лукас", 621),
+            Book(16, true, "Звездные войны, Часть 6", "Джордж Лукас", 621)
         )
 
         val disks = listOf(
@@ -63,8 +67,32 @@ class MainActivity : AppCompatActivity() {
             Newspaper(21, true, "Семья", 23, 12)
         )
 
-        val items = books + disks + newspapers
-        adapter.submitList(items.toList())
+        return books + disks + newspapers
+    }
 
+
+    private fun setupSwipeToDelete() {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                libraryAdapter.removeItem(viewHolder.adapterPosition)
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+   // class DiffCallback : DiffUtil.ItemCallback<LibraryItem>() {
+   //     override fun areItemsTheSame(oldItem: LibraryItem, newItem: LibraryItem) = oldItem.id == newItem.id
+   //     override fun areContentsTheSame(oldItem: LibraryItem, newItem: LibraryItem) = oldItem == newItem
+   // }
+
+
+
+
+    // Теперь эта функция будет вызываться при нажатии на кнопку
+    private fun openNewItemScreen() {
+        val intent = Intent(this, ItemDetailsActivity::class.java)
+        intent.putExtra("isNewItem", true)
+        startActivity(intent)
     }
 }

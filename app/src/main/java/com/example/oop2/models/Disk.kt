@@ -3,14 +3,14 @@ import com.example.oop2.LibraryAction
 
 import com.example.oop2.R
 
-class Disk(
+open class Disk(
     id: Int,
     isAvailable: Boolean,
     name: String,
     val diskType: DiskType
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
-    override val iconResId: Int = R.drawable.ic_disk
+    override fun getIconResId(): Int = R.drawable.ic_disk
     override fun getBriefInfo(): String =
         "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"
     override fun getDetailedInfo(): String =
