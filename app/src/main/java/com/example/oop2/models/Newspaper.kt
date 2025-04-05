@@ -6,11 +6,11 @@ class Newspaper(
     id: Int,
     isAvailable: Boolean,
     name: String,
-    val issueNumber: Int,
-    val Month: Int
+    private val issueNumber: Int,
+    private val Month: Int
 ) : LibraryItem(id, isAvailable, name), LibraryAction {
 
-    override val iconResId: Int = R.drawable.ic_newspaper
+    override fun getIconResId(): Int = R.drawable.ic_newspaper
     private fun getMonthName(month: Int): String {
         val months = listOf(
             "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
