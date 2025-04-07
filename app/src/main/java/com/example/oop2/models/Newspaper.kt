@@ -1,6 +1,7 @@
 package com.example.oop2.models
 import com.example.oop2.LibraryAction
 import com.example.oop2.R
+import java.io.Serializable
 
 class Newspaper(
     id: Int,
@@ -8,9 +9,9 @@ class Newspaper(
     name: String,
     private val issueNumber: Int,
     private val Month: Int
-) : LibraryItem(id, isAvailable, name), LibraryAction {
+) : LibraryItem(id, isAvailable, name, R.drawable.ic_newspaper), LibraryAction, Serializable {
 
-    override fun getIconResId(): Int = R.drawable.ic_newspaper
+
     private fun getMonthName(month: Int): String {
         val months = listOf(
             "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
@@ -19,6 +20,7 @@ class Newspaper(
         // так как в котлине все исчисления начинаются с 0 то делаем month -1
         return if (month in 1..12) months[month - 1] else "Неверный месяц"
     }
+
 
 
 

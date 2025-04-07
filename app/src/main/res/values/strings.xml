@@ -4,5 +4,10 @@
     <string name="fab_add_button">Добавить элемент</string>
     <string name="item_id">ID: %1$d</string>
     <string name="save_button_text">Сохранить</string>
+    <string name="textinfo">Информация об элементе</string>
+    <string name="name_element">Название элемента</string>
+    <string name="save">Сохранить</string>
+    <string name="avatar">avatar</string>
+
 
 </resources>

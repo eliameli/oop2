@@ -1,9 +1,13 @@
 package com.example.oop2.models
 
-sealed class LibraryItem(open val id: Int, var isAvailable: Boolean, open val name: String) {
-    abstract fun getIconResId(): Int
+import java.io.Serializable
+
+abstract class LibraryItem(
+    val id: Int,
+    var isAvailable: Boolean,
+    val name: String,
+    val iconResId: Int
+) : Serializable {
     abstract fun getBriefInfo(): String
     abstract fun getDetailedInfo(): String
 }
-
-

@@ -5,47 +5,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.oop2.R
-import com.example.oop2.models.*
+import com.example.oop2.models.LibraryItem
 
-class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder>(DiffCallback()) {
+class LibraryAdapter(
+    private val onItemClick: (LibraryItem) -> Unit
+) : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder>(DiffCallback()) {
 
     class LibraryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val nameTextView: TextView = itemView.findViewById(R.id.item_name)
-        private val iconImageView: ImageView = itemView.findViewById(R.id.item_icon)
-        private val cardView: CardView = itemView.findViewById(R.id.item_card)
+        private val icon: ImageView = itemView.findViewById(R.id.item_icon)
+        private val name: TextView = itemView.findViewById(R.id.item_name)
         private val idTextView: TextView = itemView.findViewById(R.id.item_id)
+        private val card: CardView = itemView.findViewById(R.id.item_card)
 
-
-
-        fun bind(item: LibraryItem, adapter: LibraryAdapter) {
-            itemView.findViewById<TextView>(R.id.item_name).text = item.name
-            nameTextView.text = item.name
-            iconImageView.setImageResource(item.getIconResId())
+        fun bind(item: LibraryItem) {
+            icon.setImageResource(item.iconResId)
+            name.text = item.name
             idTextView.text = itemView.context.getString(R.string.item_id, item.id)
 
-
-
             if (item.isAvailable) {
-                cardView.elevation = 10f
-                nameTextView.alpha = 1.0f
+                card.cardElevation = 10f
+                name.alpha = 1f
+                idTextView.alpha = 1f
             } else {
-                cardView.elevation = 1f
-                nameTextView.alpha = 0.3f
-            }
-
-            itemView.setOnClickListener {
-                item.isAvailable = !item.isAvailable
-                Toast.makeText(itemView.context, "Элемент с id ${item.id}", Toast.LENGTH_SHORT).show()
-                adapter.notifyItemChanged(adapterPosition)
+                card.cardElevation = 1f
+                name.alpha = 0.3f
+                idTextView.alpha = 0.3f
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {
@@ -54,13 +46,18 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
     }
 
     override fun onBindViewHolder(holder: LibraryViewHolder, position: Int) {
-        holder.bind(getItem(position), this)
+        val item = getItem(position)
+        holder.bind(item)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     fun removeItem(position: Int) {
-        val newList = currentList.toMutableList()
-        newList.removeAt(position)
-        submitList(newList)
+        val currentList = currentList.toMutableList()
+        currentList.removeAt(position)
+        submitList(currentList)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<LibraryItem>() {
@@ -70,5 +67,6 @@ class LibraryAdapter : ListAdapter<LibraryItem, LibraryAdapter.LibraryViewHolder
                     oldItem.name == newItem.name &&
                     oldItem.isAvailable == newItem.isAvailable
         }
+
     }
 }
