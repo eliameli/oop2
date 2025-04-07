@@ -2,15 +2,17 @@ package com.example.oop2.models
 import com.example.oop2.LibraryAction
 
 import com.example.oop2.R
+import java.io.Serializable
 
 class Disk(
     id: Int,
     isAvailable: Boolean,
     name: String,
     val diskType: DiskType
-) : LibraryItem(id, isAvailable, name), LibraryAction {
 
-    override val iconResId: Int = R.drawable.ic_disk
+) : LibraryItem(id, isAvailable,name, R.drawable.ic_disk), LibraryAction, Serializable {
+
+
     override fun getBriefInfo(): String =
         "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"
     override fun getDetailedInfo(): String =
