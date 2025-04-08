@@ -6,8 +6,15 @@
     <LinearLayout
         android:orientation="vertical"
         android:padding="16dp"
+        android:paddingTop="?attr/actionBarSize"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true"
+
+        android:paddingBottom="100dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
 
         <ImageView
             android:id="@+id/item_icon"

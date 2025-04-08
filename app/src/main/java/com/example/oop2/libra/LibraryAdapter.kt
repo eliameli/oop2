@@ -22,12 +22,22 @@ class LibraryAdapter(
         private val idTextView: TextView = itemView.findViewById(R.id.item_id)
         private val card: CardView = itemView.findViewById(R.id.item_card)
 
+
+
         fun bind(item: LibraryItem) {
-            icon.setImageResource(item.iconResId)
+            if (item.iconResId != 0) {
+                icon.setImageResource(item.iconResId)
+            } else {
+                icon.setImageResource(R.drawable.ic_default) // запасная картинка
+            }
+
             name.text = item.name
             idTextView.text = itemView.context.getString(R.string.item_id, item.id)
+            updateAvailabilityStyle(item.isAvailable)
+        }
 
-            if (item.isAvailable) {
+        private fun updateAvailabilityStyle(isAvailable: Boolean) {
+            if (isAvailable) {
                 card.cardElevation = 10f
                 name.alpha = 1f
                 idTextView.alpha = 1f
@@ -37,7 +47,6 @@ class LibraryAdapter(
                 idTextView.alpha = 0.3f
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder {

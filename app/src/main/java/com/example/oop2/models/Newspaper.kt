@@ -9,8 +9,9 @@ class Newspaper(
     name: String,
     private val issueNumber: Int,
     private val Month: Int
-) : LibraryItem(id, isAvailable, name, R.drawable.ic_newspaper), LibraryAction, Serializable {
-
+) : LibraryItem(id, isAvailable, name), LibraryAction, Serializable {
+    override val iconResId: Int
+        get() = R.drawable.ic_newspaper
 
     private fun getMonthName(month: Int): String {
         val months = listOf(

@@ -79,4 +79,6 @@ private fun setupSwipeToDelete() {
         intent.putExtra("isNewItem", true)
         startActivity(intent)
     }
+
+
 }

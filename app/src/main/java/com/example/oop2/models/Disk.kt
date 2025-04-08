@@ -10,8 +10,9 @@ class Disk(
     name: String,
     val diskType: DiskType
 
-) : LibraryItem(id, isAvailable,name, R.drawable.ic_disk), LibraryAction, Serializable {
-
+) : LibraryItem(id, isAvailable,name), LibraryAction, Serializable {
+    override val iconResId: Int
+        get() = R.drawable.ic_disk
 
     override fun getBriefInfo(): String =
         "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"

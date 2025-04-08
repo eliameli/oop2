@@ -6,8 +6,9 @@ abstract class LibraryItem(
     val id: Int,
     var isAvailable: Boolean,
     val name: String,
-    val iconResId: Int
+
 ) : Serializable {
     abstract fun getBriefInfo(): String
     abstract fun getDetailedInfo(): String
+    abstract val iconResId: Int
 }
