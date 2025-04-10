@@ -9,6 +9,7 @@ abstract class LibraryItem(
 
 ) : Serializable {
     abstract fun getBriefInfo(): String
-    abstract fun getDetailedInfo(): String
+//    abstract fun getDetailedInfo(): String
     abstract val iconResId: Int
+    open val type: String = "LibraryItem"
 }

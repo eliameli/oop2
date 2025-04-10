@@ -9,34 +9,43 @@ class Disk(
     isAvailable: Boolean,
     name: String,
     val diskType: DiskType
+) : LibraryItem(id, isAvailable, name) {
 
-) : LibraryItem(id, isAvailable,name), LibraryAction, Serializable {
     override val iconResId: Int
         get() = R.drawable.ic_disk
 
-    override fun getBriefInfo(): String =
-        "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"
-    override fun getDetailedInfo(): String =
-        "$diskType '$name' (ID: $id)"
-    override fun takeHome() {
-        if (isAvailable) {
-            isAvailable = false
-            println("$diskType $name взяли домой.")
-        } else {
-            println("$diskType $name недоступен для взятия домой.")
-        }
+    override val type: String = "Disk"
+
+    override fun getBriefInfo(): String {
+        return "Disk: $name, Type: $diskType"
     }
 
-    override fun readInHall() {
-        println("Нельзя использовать диск $name в читальном зале.")
-    }
-
-    override fun returnItem() {
-        if (!isAvailable) {
-            isAvailable = true
-            println("$diskType $name возвращён.")
-        } else {
-            println("$diskType $name уже доступен.")
-        }
-    }
 }
+
+
+//    override fun getBriefInfo(): String =
+//        "$diskType $name — ${if (isAvailable) "Доступен" else "Нет"}"
+//    override fun getDetailedInfo(): String =
+//        "$diskType '$name' (ID: $id)"
+//    override fun takeHome() {
+//        if (isAvailable) {
+//            isAvailable = false
+//            println("$diskType $name взяли домой.")
+//        } else {
+//            println("$diskType $name недоступен для взятия домой.")
+//        }
+//    }
+//
+//    override fun readInHall() {
+//        println("Нельзя использовать диск $name в читальном зале.")
+//    }
+//
+//    override fun returnItem() {
+//        if (!isAvailable) {
+//            isAvailable = true
+//            println("$diskType $name возвращён.")
+//        } else {
+//            println("$diskType $name уже доступен.")
+//        }
+//    }
+

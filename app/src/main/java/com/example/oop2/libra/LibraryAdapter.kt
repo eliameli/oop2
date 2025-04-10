@@ -34,6 +34,10 @@ class LibraryAdapter(
             name.text = item.name
             idTextView.text = itemView.context.getString(R.string.item_id, item.id)
             updateAvailabilityStyle(item.isAvailable)
+
+            name.text = item.name
+            name.isSelected = true
+
         }
 
         private fun updateAvailabilityStyle(isAvailable: Boolean) {
