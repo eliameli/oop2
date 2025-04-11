@@ -1,60 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="16dp">
+
+<LinearLayout
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="wrap_content"
+    android:id="@+id/item_detail_layout">
 
     <ImageView
         android:id="@+id/item_icon"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_default"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="80dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_default"
+        android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/main_first"
+    <TextView android:id="@+id/main_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Название"
         android:textStyle="bold"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/item_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/edit_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите название"
+        android:visibility="gone" />
+
+    <Spinner
+        android:layout_marginTop="8dp"
+        android:id="@+id/type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/main_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Доп. инфо"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/main_first"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="8dp" />
 
-    <TextView
-        android:id="@+id/add_first"
+    <EditText
+        android:id="@+id/edit_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Автор"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/edit_pages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Количество страниц"
+        android:inputType="number"
+        android:visibility="gone" />
+
+    <Spinner
+        android:layout_marginTop="8dp"
+        android:id="@+id/disk_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/edit_issue_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Номер выпуска"
+        android:inputType="number"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/edit_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Месяц (1-12)"
+        android:inputType="number"
+        android:visibility="gone" />
+
+    <TextView android:id="@+id/add_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Добавочная инфо"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/main_second"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="Дополнительно"
         android:layout_marginTop="8dp" />
 
-    <TextView
-        android:id="@+id/add_second"
+    <TextView android:id="@+id/add_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ID элемента"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/add_first"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="ID"
         android:layout_marginTop="4dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/purple_200" />
+</LinearLayout>
+</ScrollView>
