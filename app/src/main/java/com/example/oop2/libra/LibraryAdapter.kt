@@ -21,9 +21,6 @@ class LibraryAdapter(
         private val name: TextView = itemView.findViewById(R.id.item_name)
         private val idTextView: TextView = itemView.findViewById(R.id.item_id)
         private val card: CardView = itemView.findViewById(R.id.item_card)
-
-
-
         fun bind(item: LibraryItem) {
             if (item.iconResId != 0) {
                 icon.setImageResource(item.iconResId)

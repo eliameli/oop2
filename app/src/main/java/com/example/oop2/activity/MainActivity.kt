@@ -1,95 +1,72 @@
+// MainActivity.kt
 package com.example.oop2.activity
 
-import android.content.Intent
-import android.graphics.drawable.ColorDrawable
+import android.content.res.Configuration
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.oop2.R
-import com.example.oop2.libra.LibraryAdapter
-import com.example.oop2.libra.LibraryViewModel
-import com.example.oop2.models.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-class MainActivity : AppCompatActivity() {
+import com.example.oop2.fragments.DetailsFragment
+import com.example.oop2.fragments.ListFragment
+import com.example.oop2.models.LibraryItem
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var libraryAdapter: LibraryAdapter
-    private lateinit var viewModel: LibraryViewModel
-    private lateinit var addButton: FloatingActionButton
-    private val addItemLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            viewModel.refresh()
+@Suppress("DEPRECATION")
+class MainActivity : AppCompatActivity(), ListFragment.OnItemClickListener {
+
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        if (isLandscape) {
+            val detailsFragment = supportFragmentManager.findFragmentById(R.id.fragment_details_container)
+            if (detailsFragment != null) {
+                supportFragmentManager.beginTransaction()
+                    .remove(detailsFragment)
+                    .commit()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        supportActionBar?.title = "Библиотека"
-        supportActionBar?.setBackgroundDrawable(
-            ColorDrawable(ContextCompat.getColor(this, R.color.purple_200))
-        )
-        // start UI
-        recyclerView = findViewById(R.id.recyclerView)
-        addButton = findViewById(R.id.add_button)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        // viewModel
-        viewModel = ViewModelProvider(this)[LibraryViewModel::class.java]
-        // aдаптер
-        libraryAdapter = LibraryAdapter { item -> openItemDetails(item) }
-        recyclerView.adapter = libraryAdapter
-
-        viewModel.items.observe(this) { itemList ->
-            libraryAdapter.submitList(itemList.toList())
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        supportFragmentManager.findFragmentById(R.id.fragment_container)?.let {
+            supportFragmentManager.beginTransaction().remove(it).commitNow()
         }
-        // прелоад
-        viewModel.preloadItems()
-        // добавление
-        addButton.setOnClickListener {
-            val intent = Intent(this, ItemDetailsActivity::class.java)
-            intent.putExtra("isNewItem", true)
-            addItemLauncher.launch(intent)
-        }
-        setupSwipeToDelete()
-    }
-    private fun openItemDetails(item: LibraryItem) {
-        val intent = Intent(this, ItemDetailsActivity::class.java).apply {
-            putExtra("item_type", item.type)
-            putExtra("item_icon", item.iconResId)
-            putExtra("item_name", item.name)
-            putExtra("item_id", item.id)
 
-            when (item) {
-                is Book -> {
-                    putExtra("book_author", item.author)
-                    putExtra("book_number_of_pages", item.pages)
-                }
-                is Disk -> putExtra("disk_type", item.diskType.name)
-                is Newspaper -> {
-                    putExtra("newspaper_month", item.month)
-                    putExtra("newspaper_issue_number", item.issueNumber)
-                }
+        if (isLandscape) {
+            val hasList = supportFragmentManager.findFragmentById(R.id.fragment_list_container) != null
+
+            if (!hasList) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_list_container, ListFragment())
+                    .commit()
+            }
+        } else {
+            val listFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (listFragment !is ListFragment) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListFragment())
+                    .commit()
             }
         }
-        startActivity(intent)
     }
-    private fun setupSwipeToDelete() {
-        val itemTouchHelper = ItemTouchHelper(object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
 
-            override fun onSwiped(vh: RecyclerView.ViewHolder, direction: Int) {
-                val item = libraryAdapter.currentList[vh.adapterPosition]
-                viewModel.removeItem(item)
+    override fun onItemClicked(item: LibraryItem?) {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val fragment = DetailsFragment.newInstance(item)
+
+        supportFragmentManager.beginTransaction()
+            .replace(
+                if (isLandscape) R.id.fragment_details_container else R.id.fragment_container,
+                fragment
+            )
+            .apply {
+                if (!isLandscape) addToBackStack(null)
             }
-        })
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+            .commit()
     }
 }
