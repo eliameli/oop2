@@ -1,70 +1,83 @@
 package com.example.oop2.activity
-
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.oop2.R
-import com.example.oop2.libra.LibraryAdapter
-import com.example.oop2.models.*
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: LibraryAdapter
+import com.example.oop2.fragments.DetailsFragment
+import com.example.oop2.fragments.ListFragment
+import com.example.oop2.models.LibraryItem
+@Suppress("DEPRECATION")
+class MainActivity : AppCompatActivity(), ListFragment.OnItemClickListener {
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        if (isLandscape) {
+            val detailsFragment = supportFragmentManager.findFragmentById(R.id.fragment_details_container)
+            if (detailsFragment != null) {
+                supportFragmentManager.beginTransaction()
+                    .remove(detailsFragment)
+                    .commit()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        recyclerView = findViewById(R.id.recyclerView)
-        adapter = LibraryAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-        loadLibraryItems()
-        supportActionBar?.title = "Библиотека"
-
-        val itemTouchHelper = ItemTouchHelper(object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
+        val tag = "details"
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val existingDetailsArgs = supportFragmentManager.findFragmentByTag(tag)?.arguments
+        val existingDetails = existingDetailsArgs?.let {
+            DetailsFragment().apply { arguments = it }
+        }
+        //удаление фрагментов при переходе в ландскейп
+        if (isLandscape) {
+            supportFragmentManager.findFragmentById(R.id.fragment_container)?.let {
+                supportFragmentManager.beginTransaction().remove(it).commitNow()
             }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                adapter.removeItem(position)
+        }
+        if (isLandscape) {
+            // альбомная ариентация
+            if (supportFragmentManager.findFragmentById(R.id.fragment_list_container) == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_list_container, ListFragment())
+                    .commit()
             }
-        })
-
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+            if (existingDetails is DetailsFragment) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_details_container, existingDetails, tag)
+                    .commit()
+            }
+        } else {
+            // портретка
+            if (existingDetails is DetailsFragment) {
+                supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, existingDetails, tag)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListFragment())
+                    .commit()
+            }
+        }
     }
+    override fun onItemClicked(item: LibraryItem?) {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val fragment = DetailsFragment.newInstance(item)
+        val tag = "details"
 
-    private fun loadLibraryItems() {
-        val books = listOf(
-            Book(1, true, "Маугли", "Джозеф Киплинг", 202),
-            Book(11, true, "Звездные войны, Часть 1", "Джордж Лукас", 401),
-            Book(12, true, "Звездные войны, Часть 2", "Джордж Лукас", 412),
-            Book(13, true, "Звездные войны, Часть 3", "Джордж Лукас", 441),
-            Book(14, true, "Звездные войны, Часть 4", "Джордж Лукас", 423),
-            Book(15, true, "Звездные войны, Часть 5", "Джордж Лукас", 363),
-            Book(16, true, "Звездные войны, Часть 6", "Джордж Лукас", 621),
-        )
-
-        val disks = listOf(
-            Disk(3, true, "Дэдпул и Росомаха", DiskType.CD),
-            Disk(31, true, "Один Дома", DiskType.DVD)
-        )
-
-        val newspapers = listOf(
-            Newspaper(2, true, "Сельская жизнь", 794, 3),
-            Newspaper(21, true, "Семья", 23, 12)
-        )
-
-        val items = books + disks + newspapers
-        adapter.submitList(items.toList())
-
+        supportFragmentManager.beginTransaction()
+            .replace(
+                if (isLandscape) R.id.fragment_details_container else R.id.fragment_container,
+                fragment, tag)
+            .apply {
+                if (!isLandscape) addToBackStack(null)
+            }
+            .commit()
     }
 }
