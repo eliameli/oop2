@@ -11,6 +11,20 @@
     <string name="item_name_content_description">Название элемента</string>
 
     <string name="add_item_icon">Картинка для добавления\n</string>
+    <string name="add_new_item">Добавление нового элемента</string>
+
+    <string name="book_title">Книга: %1$s</string>
+    <string name="book_author">Автор: %1$s</string>
+    <string name="book_pages">Страниц: %1$d</string>
+
+    <string name="disk_title">Диск: %1$s</string>
+    <string name="disk_type">Тип диска: %1$s</string>
+
+    <string name="newspaper_title">Газета: %1$s</string>
+    <string name="newspaper_issue">Выпуск №%1$d</string>
+    <string name="newspaper_month">Месяц: %1$d</string>
+
+
 
 
 </resources>
