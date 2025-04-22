@@ -1,4 +1,4 @@
-package com.example.oop2.fragments
+package com.example.oop2.fragment
 
 import android.os.Build
 import android.os.Bundle
@@ -12,11 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.oop2.R
 import com.example.oop2.libra.LibraryViewModel
 import com.example.oop2.models.*
+import com.facebook.shimmer.ShimmerFrameLayout
 
 class DetailsFragment : Fragment() {
+
     companion object {
         private const val ARG_ITEM = "arg_item"
-
         fun newInstance(item: LibraryItem?): DetailsFragment {
             val fragment = DetailsFragment()
             val args = Bundle()
@@ -25,21 +26,27 @@ class DetailsFragment : Fragment() {
             return fragment
         }
     }
+
     private lateinit var viewModel: LibraryViewModel
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.activity_item_details, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[LibraryViewModel::class.java]
         val item: LibraryItem? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
             arguments?.getSerializable(ARG_ITEM, LibraryItem::class.java)
         } else {
             @Suppress("DEPRECATION")
             arguments?.getSerializable(ARG_ITEM) as? LibraryItem
         }
+
         val icon: ImageView = view.findViewById(R.id.item_icon)
         val mainFirst: TextView = view.findViewById(R.id.main_first)
         val mainSecond: TextView = view.findViewById(R.id.main_second)
@@ -74,6 +81,7 @@ class DetailsFragment : Fragment() {
                 adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, typeOptions)
             }
             val saveButton = Button(requireContext()).apply {
+
                 text = "Сохранить"
                 setOnClickListener {
                     val name = nameInput.text.toString().ifBlank { "Без названия" }
@@ -82,7 +90,12 @@ class DetailsFragment : Fragment() {
                     val newItem: LibraryItem = when (selectedType) {
                         "Книга" -> Book(id, true, name, authorInput.text.toString(), pagesInput.text.toString().toIntOrNull() ?: 0)
                         "Диск" -> Disk(id, true, name, diskTypeSpinner.selectedItem as DiskType)
-                        else -> Newspaper(id, true, name, issueInput.text.toString().toIntOrNull() ?: 0, monthInput.text.toString().toIntOrNull() ?: 1)
+                        else -> {
+                            val issue = issueInput.text.toString().toIntOrNull() ?: 0
+                            val month = monthInput.text.toString().toIntOrNull()?.takeIf { it in 1..12 } ?: 1
+                            Newspaper(id, true, name, issue, month)
+                        }
+
                     }
                     viewModel.addItem(newItem)
                     if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
@@ -95,6 +108,7 @@ class DetailsFragment : Fragment() {
 
                 }
             }
+
             typeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, v: View?, position: Int, id: Long) {
                     layout.removeAllViews()
@@ -129,6 +143,7 @@ class DetailsFragment : Fragment() {
             typeSpinner.setSelection(0)
             typeSpinner.onItemSelectedListener?.onItemSelected(typeSpinner, null, 0, 0)
             return
+
         }
         icon.setImageResource(item.iconResId)
         when (item) {
