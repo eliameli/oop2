@@ -8,11 +8,11 @@ class Disk(
     id: Int,
     isAvailable: Boolean,
     name: String,
-    val diskType: DiskType
+    val diskType: DiskType,
+    override val iconResId: Int = R.drawable.ic_disk
 ) : LibraryItem(id, isAvailable, name) {
 
-    override val iconResId: Int
-        get() = R.drawable.ic_disk
+
 
     override val type: String = "Disk"
 

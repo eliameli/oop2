@@ -10,9 +10,10 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.oop2.R
+import com.example.oop2.database.LibraryItemEntity
 import com.example.oop2.libra.LibraryViewModel
 import com.example.oop2.models.*
-import com.facebook.shimmer.ShimmerFrameLayout
+
 
 class DetailsFragment : Fragment() {
 
@@ -97,7 +98,18 @@ class DetailsFragment : Fragment() {
                         }
 
                     }
-                    viewModel.addItem(newItem)
+                    viewModel.addItem(
+                        LibraryItemEntity(
+                            name = newItem.name,
+                            type = newItem.type,
+                            author = (newItem as? Book)?.author,
+                            pages = (newItem as? Book)?.pages,
+                            diskType = (newItem as? Disk)?.diskType?.name,
+                            issueNumber = (newItem as? Newspaper)?.issueNumber,
+                            month = (newItem as? Newspaper)?.month
+                        )
+                    )
+
                     if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
                         parentFragmentManager.beginTransaction()
                             .remove(this@DetailsFragment)

@@ -13,8 +13,6 @@ fun main() {
         Disk(3, true, "Дэдпул и Росомаха", DiskType.CD),
         Disk(31, true, "Один Дома", DiskType.DVD)
     )
-
-
     // запуск
     Library(items).start()
 }
