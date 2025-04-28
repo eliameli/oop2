@@ -7,9 +7,10 @@ class Book(
     isAvailable: Boolean,
     name: String,
     val author: String,
-    val pages: Int
+    val pages: Int,
+    override val iconResId: Int = R.drawable.ic_book
 ) : LibraryItem(id, isAvailable, name), Serializable {
-    override val iconResId: Int get() = R.drawable.ic_book
+
     override val type: String = "Book"
     override fun getBriefInfo(): String = "Книга $name — ${if (isAvailable) "Доступна" else "Нет"}"
 }

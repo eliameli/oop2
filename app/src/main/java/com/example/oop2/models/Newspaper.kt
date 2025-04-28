@@ -8,11 +8,11 @@ class Newspaper(
     isAvailable: Boolean,
     name: String,
     val issueNumber: Int,
-    val month: Int
+    val month: Int,
+    override val iconResId: Int = R.drawable.ic_newspaper
 ) : LibraryItem(id, isAvailable, name), Serializable {
 
-    override val iconResId: Int
-        get() = R.drawable.ic_newspaper
+
 
     override val type: String = "Newspaper"
 
