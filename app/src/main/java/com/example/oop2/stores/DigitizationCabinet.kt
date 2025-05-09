@@ -3,6 +3,7 @@ package com.example.oop2.stores
 
 import com.example.oop2.models.*
 
+@Suppress("UNCHECKED_CAST")
 class DigitizationCabinet<T : LibraryItem, R : Disk> {
     fun digitize(item: T): R {
         return Disk(

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="80dp"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="1500">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Карточки-заглушки -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+                        <View
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/shimmer_placeholder"/>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="12dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/shimmer_placeholder"/>
+                            <View
+                                android:layout_width="80dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/shimmer_placeholder"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="80dp"/>
+    </FrameLayout>
+
+    <!-- Кнопки библиотеки и Google Books -->
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/button_local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Библиотека"
+            app:backgroundTint="@color/purple_200"/>
+
+        <Button
+            android:id="@+id/button_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Google Books"
+            android:layout_marginStart="8dp"
+            app:backgroundTint="@color/purple_200"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/search_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="bottom"
+        android:elevation="4dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/input_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Автор" />
+
+            <EditText
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Заголовок"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/button_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Поиск"
+                android:enabled="false"
+                app:backgroundTint="@color/purple_200"
+                app:tint="@android:color/white"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/retry_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Повторить"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/purple_200"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/fab_add_button"
+        app:backgroundTint="@color/purple_200"
+        app:tint="@android:color/white"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

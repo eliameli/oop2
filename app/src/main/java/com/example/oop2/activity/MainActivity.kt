@@ -1,70 +1,78 @@
 package com.example.oop2.activity
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.example.oop2.R
-import com.example.oop2.libra.LibraryAdapter
-import com.example.oop2.models.*
+import com.example.oop2.fragment.DetailsFragment
+import com.example.oop2.fragment.LibraryActionType
+import com.example.oop2.fragment.ListFragment
+import com.example.oop2.libra.LibraryRepository
+import com.example.oop2.models.LibraryItem
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: LibraryAdapter
+class MainActivity : AppCompatActivity(), ListFragment.OnItemClickListener {
+    companion object {
+        private const val TAG_DETAILS = "details"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        recyclerView = findViewById(R.id.recyclerView)
-        adapter = LibraryAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-        loadLibraryItems()
-        supportActionBar?.title = "Библиотека"
+        LibraryRepository.initDatabase(applicationContext)
+        supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.purple_200))
 
-        val itemTouchHelper = ItemTouchHelper(object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
+
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val existingDetailsArgs = supportFragmentManager.findFragmentByTag(TAG_DETAILS)?.arguments
+        val existingDetails = existingDetailsArgs?.let {
+            DetailsFragment().apply { arguments = it }
+        }
+
+        if (isLandscape) {
+            supportFragmentManager.findFragmentById(R.id.fragment_container)?.let {
+                supportFragmentManager.beginTransaction().remove(it).commitNow()
             }
+        }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                adapter.removeItem(position)
+        if (isLandscape) {
+            if (supportFragmentManager.findFragmentById(R.id.fragment_list_container) == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_list_container, ListFragment())
+                    .commit()
             }
-        })
-
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+            if (existingDetails is DetailsFragment) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_details_container, existingDetails, TAG_DETAILS)
+                    .commit()
+            }
+        } else {
+            if (existingDetails is DetailsFragment) {
+                supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, existingDetails, TAG_DETAILS)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListFragment())
+                    .commit()
+            }
+        }
     }
 
-    private fun loadLibraryItems() {
-        val books = listOf(
-            Book(1, true, "Маугли", "Джозеф Киплинг", 202),
-            Book(11, true, "Звездные войны, Часть 1", "Джордж Лукас", 401),
-            Book(12, true, "Звездные войны, Часть 2", "Джордж Лукас", 412),
-            Book(13, true, "Звездные войны, Часть 3", "Джордж Лукас", 441),
-            Book(14, true, "Звездные войны, Часть 4", "Джордж Лукас", 423),
-            Book(15, true, "Звездные войны, Часть 5", "Джордж Лукас", 363),
-            Book(16, true, "Звездные войны, Часть 6", "Джордж Лукас", 621),
-        )
+     override fun onItemClicked(item: LibraryItem?, action: LibraryActionType) {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val fragment = DetailsFragment.newInstance(item)
 
-        val disks = listOf(
-            Disk(3, true, "Дэдпул и Росомаха", DiskType.CD),
-            Disk(31, true, "Один Дома", DiskType.DVD)
-        )
-
-        val newspapers = listOf(
-            Newspaper(2, true, "Сельская жизнь", 794, 3),
-            Newspaper(21, true, "Семья", 23, 12)
-        )
-
-        val items = books + disks + newspapers
-        adapter.submitList(items.toList())
-
+        supportFragmentManager.beginTransaction()
+            .replace(
+                if (isLandscape) R.id.fragment_details_container else R.id.fragment_container,
+                fragment,
+                TAG_DETAILS
+            )
+            .apply {
+                if (!isLandscape) addToBackStack(null)
+            }
+            .commit()
     }
 }
