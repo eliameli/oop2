@@ -3,6 +3,7 @@ package com.example.oop2.activity
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.oop2.R
 import com.example.oop2.fragment.DetailsFragment
 import com.example.oop2.fragment.LibraryActionType
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity(), ListFragment.OnItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         LibraryRepository.initDatabase(applicationContext)
+        supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.purple_200))
+
 
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val existingDetailsArgs = supportFragmentManager.findFragmentByTag(TAG_DETAILS)?.arguments

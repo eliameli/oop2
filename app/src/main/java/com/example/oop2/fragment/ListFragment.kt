@@ -1,19 +1,23 @@
 package com.example.oop2.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.oop2.R
+import com.example.oop2.libra.GoogleBooksAdapter
 import com.example.oop2.libra.LibraryAdapter
 import com.example.oop2.libra.LibraryViewModel
+import com.example.oop2.models.Book
 import com.example.oop2.models.LibraryItem
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ListFragment : Fragment() {
@@ -22,83 +26,143 @@ class ListFragment : Fragment() {
         fun onItemClicked(item: LibraryItem?, action: LibraryActionType)
     }
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: LibraryAdapter
-    private lateinit var viewModel: LibraryViewModel
-    private lateinit var addButton: FloatingActionButton
     private var listener: OnItemClickListener? = null
+    private lateinit var viewModel: LibraryViewModel
 
-    override fun onAttach(context: android.content.Context) {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var shimmer: ShimmerFrameLayout
+    private lateinit var retryButton: Button
+    private lateinit var addButton: FloatingActionButton
+
+    private lateinit var libraryButton: Button
+    private lateinit var googleButton: Button
+    private lateinit var searchSection: View
+    private lateinit var authorInput: EditText
+    private lateinit var titleInput: EditText
+    private lateinit var searchButton: Button
+
+    private var libraryAdapter: LibraryAdapter? = null
+    private var googleAdapter: GoogleBooksAdapter? = null
+
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnItemClickListener) {
-            listener = context
-        } else {
-            throw ClassCastException("Activity must implement OnItemClickListener")
-        }
+        if (context is OnItemClickListener) listener = context
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
-        recyclerView = view.findViewById(R.id.recyclerView)
-        addButton = view.findViewById(R.id.add_button)
-        return view
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (requireActivity() as? AppCompatActivity)?.supportActionBar?.setBackgroundDrawable(
-            ContextCompat.getDrawable(requireContext(), R.color.purple_200)
-        )
-
         viewModel = ViewModelProvider(requireActivity())[LibraryViewModel::class.java]
-        adapter = LibraryAdapter { item ->
-            listener?.onItemClicked(item, LibraryActionType.VIEW)
-        }
+
+        recyclerView = view.findViewById(R.id.recyclerView)
+        shimmer = view.findViewById(R.id.shimmer)
+        retryButton = view.findViewById(R.id.retry_button)
+        addButton = view.findViewById(R.id.add_button)
+
+        libraryButton = view.findViewById(R.id.button_local)
+        googleButton = view.findViewById(R.id.button_google)
+        searchSection = view.findViewById(R.id.search_section)
+        authorInput = view.findViewById(R.id.input_author)
+        titleInput = view.findViewById(R.id.input_title)
+        searchButton = view.findViewById(R.id.button_search)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
 
-        viewModel.libraryItems.observe(viewLifecycleOwner) { itemList ->
-            adapter.submitList(itemList)
+        setupObservers()
+        setupListeners()
+
+        showShimmer()
+        viewModel.loadInitialItems()
+    }
+
+    private fun setupObservers() {
+        viewModel.libraryItems.observe(viewLifecycleOwner) {
+            libraryAdapter = LibraryAdapter { item ->
+                listener?.onItemClicked(item, LibraryActionType.VIEW)
+            }
+            recyclerView.adapter = libraryAdapter
+            libraryAdapter?.submitList(it)
+            hideShimmer()
         }
 
+        viewModel.googleBooks.observe(viewLifecycleOwner) { libraryItems ->
+            val books = libraryItems.filterIsInstance<Book>() // оставляем только Book
+            googleAdapter = GoogleBooksAdapter(
+                items = books,
+                onLongClick = { book -> viewModel.saveGoogleBook(book) }
+            )
+            recyclerView.adapter = googleAdapter
+            hideShimmer()
+        }
+
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            shimmer.isVisible = it
+            recyclerView.isVisible = !it
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            it?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun setupListeners() {
         addButton.setOnClickListener {
             listener?.onItemClicked(null, LibraryActionType.ADD)
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_sort, menu)
-    }
+        retryButton.setOnClickListener {
+            showShimmer()
+            viewModel.refreshItems()
+        }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_sort -> {
-                showSortPopup()
-                true
+        libraryButton.setOnClickListener {
+            searchSection.visibility = View.GONE
+            showShimmer()
+            viewModel.loadInitialItems()
+        }
+
+        googleButton.setOnClickListener {
+            searchSection.visibility = View.VISIBLE
+            recyclerView.adapter = null
+            viewModel.clearGoogleBooks()
+        }
+
+        val watcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                searchButton.isEnabled =
+                    authorInput.text.length >= 3 || titleInput.text.length >= 3
             }
-            else -> super.onOptionsItemSelected(item)
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+
+        authorInput.addTextChangedListener(watcher)
+        titleInput.addTextChangedListener(watcher)
+
+        searchButton.setOnClickListener {
+            showShimmer()
+            viewModel.searchGoogleBooks(
+                author = authorInput.text.toString(),
+                title = titleInput.text.toString()
+            )
         }
     }
 
-    private fun showSortPopup() {
-        val anchor = requireActivity().findViewById<View>(R.id.action_sort)
-        val popup = PopupMenu(requireContext(), anchor)
-        popup.menuInflater.inflate(R.menu.menu_sort_popup, popup.menu)
+    private fun showShimmer() {
+        shimmer.visibility = View.VISIBLE
+        shimmer.startShimmer()
+        recyclerView.visibility = View.GONE
+    }
 
-        popup.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.sort_by_name -> viewModel.changeSorting(true)
-                R.id.sort_by_date -> viewModel.changeSorting(false)
-            }
-            true
-        }
-        popup.show()
+    private fun hideShimmer() {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 }

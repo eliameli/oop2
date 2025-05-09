@@ -1,121 +1,91 @@
 package com.example.oop2.libra
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.oop2.R
 import com.example.oop2.database.LibraryItemEntity
 import com.example.oop2.models.*
-import com.example.oop2.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LibraryViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val preferences = application.getSharedPreferences("library_prefs", Context.MODE_PRIVATE)
-
-    private val _items = MutableLiveData<List<LibraryItemEntity>>()
-    val items: LiveData<List<LibraryItemEntity>> get() = _items
+class LibraryViewModel : ViewModel() {
 
     private val _libraryItems = MutableLiveData<List<LibraryItem>>()
     val libraryItems: LiveData<List<LibraryItem>> get() = _libraryItems
 
+    private val _googleBooks = MutableLiveData<List<LibraryItem>>()
+    val googleBooks: LiveData<List<LibraryItem>> get() = _googleBooks
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
 
-    private var currentOffset = 0
-    private var pageSize = 30
-    private var isLoading = false
-
-    private var sortByName = preferences.getBoolean(KEY_SORT_BY_NAME, true)
-
-    companion object {
-        private const val KEY_SORT_BY_NAME = "sort_by_name"
-    }
-
-    private var accessCount = 0
-
-    init {
-        loadInitialItems()
-    }
-
-    fun loadInitialItems() {
+    fun addItem(entity: LibraryItemEntity) {
         viewModelScope.launch {
-            isLoading = true
-
-            _items.value = emptyList()
-
-            delay(1000L) // показываем shimmer хотя бы секунду
-
             try {
-                delay((100..2000).random().toLong())
-
-                LibraryRepository.initializeIfEmpty()
-
-                accessCount++
-                if (accessCount % 4 == 0) {
-                    throw RuntimeException("Ошибка чтения из базы")
-                }
-
-                val loadedItems = if (sortByName) {
-                    LibraryRepository.getItemsSortedByName(pageSize, 0)
-                } else {
-                    LibraryRepository.getItemsSortedByDate(pageSize, 0)
-                }
-
-                _items.value = loadedItems
-                _libraryItems.value = loadedItems.map { entityToModel(it) }
-                currentOffset = loadedItems.size
-                _error.value = null
+                LibraryRepository.insert(entity)
+                loadInitialItems()
             } catch (e: Exception) {
                 _error.value = e.message
-            } finally {
-                isLoading = false
             }
         }
     }
 
-    fun loadMoreItems() {
-        if (isLoading) return
+    fun loadInitialItems() {
         viewModelScope.launch {
-            isLoading = true
+            _loading.value = true
+            delay(1000) // гарантированный шиммер
             try {
-                val loadedItems = if (sortByName) {
-                    LibraryRepository.getItemsSortedByName(pageSize / 2, currentOffset)
-                } else {
-                    LibraryRepository.getItemsSortedByDate(pageSize / 2, currentOffset)
-                }
-                val currentList = _items.value.orEmpty()
-                _items.value = currentList + loadedItems
-                _libraryItems.value = _items.value!!.map { entityToModel(it) }
-                currentOffset += loadedItems.size
-                _error.value = null
+                LibraryRepository.initializeIfEmpty()
+                val entities = LibraryRepository.getItemsSortedByName(30, 0)
+                _libraryItems.value = entities.map { entityToModel(it) }
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
-                isLoading = false
+                _loading.value = false
             }
         }
     }
 
     fun refreshItems() {
-        currentOffset = 0
         loadInitialItems()
     }
 
-    fun changeSorting(sortByNameSelected: Boolean) {
-        sortByName = sortByNameSelected
-        preferences.edit().putBoolean(KEY_SORT_BY_NAME, sortByName).apply()
-        refreshItems()
+    fun clearGoogleBooks() {
+        _googleBooks.value = emptyList()
     }
 
-    fun addItem(item: LibraryItemEntity) {
+    fun searchGoogleBooks(author: String, title: String) {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                val books = GoogleBooksRepository.searchBooks(author, title)
+                _googleBooks.value = books
+            } catch (e: Exception) {
+                _error.value = e.message
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun saveGoogleBook(book: Book) {
         viewModelScope.launch {
             try {
-                LibraryRepository.insert(item)
-                refreshItems()
+                val entity = LibraryItemEntity(
+                    name = book.name,
+                    type = "Book",
+                    author = book.author,
+                    pages = book.pages,
+                    diskType = null,
+                    issueNumber = null,
+                    month = null
+                )
+                LibraryRepository.insert(entity)
             } catch (e: Exception) {
                 _error.value = e.message
             }
