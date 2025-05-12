@@ -1,7 +1,6 @@
 package com.example.oop2.stores
 
-import com.example.oop2.Store
-import com.example.oop2.models.Newspaper
+import com.example.oop2.domain.model.Newspaper
 
 class NewspaperStore : Store<Newspaper> {
     override fun sell(): Newspaper {
