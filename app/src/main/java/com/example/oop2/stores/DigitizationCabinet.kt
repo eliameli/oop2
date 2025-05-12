@@ -1,7 +1,9 @@
 package com.example.oop2.stores
 
 
-import com.example.oop2.models.*
+import com.example.oop2.domain.model.Disk
+import com.example.oop2.common.DiskType
+import com.example.oop2.domain.model.LibraryItem
 
 @Suppress("UNCHECKED_CAST")
 class DigitizationCabinet<T : LibraryItem, R : Disk> {

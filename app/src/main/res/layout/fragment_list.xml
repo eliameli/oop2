@@ -69,7 +69,6 @@
             android:layout_marginTop="80dp"/>
     </FrameLayout>
 
-    <!-- Кнопки библиотеки и Google Books -->
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="wrap_content"

@@ -18,7 +18,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+include(":data", ":domain", ":common")
 
 rootProject.name = "oop2"
-include(":app")
- 
+include(":app", ":data", ":domain", ":common")
+
+include(":app:myapplication")
