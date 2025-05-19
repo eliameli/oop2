@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.kapt")
     id("kotlin-kapt")
+
+
+
 }
 
 android {
@@ -59,7 +62,8 @@ dependencies {
     implementation(libs.androidx.coordinatorlayout)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
+    implementation("com.google.dagger:dagger:2.51.1")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")

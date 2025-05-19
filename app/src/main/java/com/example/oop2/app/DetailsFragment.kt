@@ -41,7 +41,9 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        val factory = LibraryViewModelFactory(requireContext())
+        val app = requireActivity().application as LibraryApp
+        val factory = LibraryViewModelFactory(app)
+
         viewModel = ViewModelProvider(requireActivity(), factory)[LibraryViewModel::class.java]
 
         val item: LibraryItem? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

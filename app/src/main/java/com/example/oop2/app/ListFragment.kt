@@ -54,7 +54,9 @@ class ListFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val factory = LibraryViewModelFactory(requireContext())
+        val app = requireActivity().application as LibraryApp
+        val factory = LibraryViewModelFactory(app)
+
         viewModel = ViewModelProvider(requireActivity(), factory)[LibraryViewModel::class.java]
 
         recyclerView = view.findViewById(R.id.recyclerView)
